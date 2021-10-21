@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Jobseeker;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +13,12 @@ class Profiles extends Model
         'fullname',
         'phone',
         'email',
-        'address',
+        'address1',
+        'address2',
+        'city',
+        'state',
+        'postal',
+        'country',
         'summary'
     ];
 
