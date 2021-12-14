@@ -25,7 +25,8 @@ class FavouriteCompaniesController extends Controller
         return $this->user
             ->fcompany()
             ->join('companies', 'favourite_companies.company_id', '=', 'companies.id')
-            ->select('companies.logo', 'companies.company_name', 'favourite_companies.company_id', 'favourite_companies.id')
+            ->join('companylogos', 'companies.user_id', '=', 'companylogos.user_id')
+            ->select('companylogos.logo', 'companies.company_name', 'favourite_companies.company_id', 'favourite_companies.id')
             ->get();
     }
 

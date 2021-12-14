@@ -17,12 +17,15 @@ use App\Http\Controllers\Jobseeker\ApplicantsController;
 use App\Http\Controllers\Jobseeker\JobsStudentsController;
 use App\Http\Controllers\Jobseeker\FavouriteJobsController;
 use App\Http\Controllers\Jobseeker\QuestionJobsController;
-
+use App\Http\Controllers\Jobseeker\NotificationController;
 
 use App\Http\Controllers\Employer\CompaniesController;
 use App\Http\Controllers\Employer\AnswersController;
 use App\Http\Controllers\Employer\JobsEmployerController;
 use App\Http\Controllers\Employer\AnswerJobsController;
+use App\Http\Controllers\Employer\CompanylogoController;
+
+Route::post('messages', [ChatController::class, 'message']);//
 
 Route::post('login-jobseeker', [ApiController::class, 'loginJobseeker']);//
 Route::post('login-employer', [ApiController::class, 'loginEmployer']);//
@@ -41,7 +44,9 @@ Route::get('answer-company/{companies}', [AnswersController::class, 'index']);//
 Route::get('answer-company/{companies}/{questions}', [AnswersController::class, 'show']);//
 Route::get('question-jobs/{ejob}', [QuestionJobsController::class, 'index']);//
 Route::get('answer-job/{questions}', [AnswerJobsController::class, 'showE']); //display//
-
+ //Search Job
+ Route::get('search/{search_job}', [JobsEmployerController::class, 'search']);//
+ 
 Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('logout', [ApiController::class, 'logout']);//
     Route::get('get-user', [ApiController::class, 'get_user']);//
@@ -78,9 +83,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     //Question-campany
     Route::post('question-company/{companies}', [QuestionsController::class, 'store']);//
     //Chat
-    Route::get('message', [ChatController::class, 'index']);
-    Route::get('message-employer/{companies}', [ChatController::class, 'showCompany']);
-    Route::post('message-employer/{companies}', [ChatController::class, 'sendCompany']);
+    // Route::get('message', [ChatController::class, 'index']);
+    // Route::get('message-employer/{companies}', [ChatController::class, 'showCompany']);
+    // Route::post('message-employer/{companies}', [ChatController::class, 'sendCompany']);
     //Favourite Company
     Route::get('favourite-company', [FavouriteCompaniesController::class, 'index']);//
     Route::post('favourite-company/{companies}', [FavouriteCompaniesController::class, 'store']);//
@@ -93,14 +98,14 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('applicants-apply/{job_e}', [ApplicantsController::class, 'applyE']);//
     Route::post('applicant-apply/{job_s}', [ApplicantsController::class, 'applyS']);
     //Job
-    Route::get('job', [JobsStudentsController::class, 'index']);
-    Route::get('job-pending', [JobsStudentsController::class, 'showPending']);
-    Route::get('job-approve', [JobsStudentsController::class, 'showApproval']);
-    Route::get('job-remove', [JobsStudentsController::class, 'showRemoved']);
-    Route::get('job/{job_j}', [JobsStudentsController::class, 'show']);
-    Route::post('job', [JobsStudentsController::class, 'store']);
-    Route::put('job-approve/{job_j}',  [JobsStudentsController::class, 'approval']); //admin
-    Route::put('job-remove/{job_j}',  [JobsStudentsController::class, 'remove']);
+    // Route::get('job', [JobsStudentsController::class, 'index']);
+    // Route::get('job-pending', [JobsStudentsController::class, 'showPending']);
+    // Route::get('job-approve', [JobsStudentsController::class, 'showApproval']);
+    // Route::get('job-remove', [JobsStudentsController::class, 'showRemoved']);
+    // Route::get('job/{job_j}', [JobsStudentsController::class, 'show']);
+    // Route::post('job', [JobsStudentsController::class, 'store']);
+    // Route::put('job-approve/{job_j}',  [JobsStudentsController::class, 'approval']); //admin
+    // Route::put('job-remove/{job_j}',  [JobsStudentsController::class, 'remove']);
     //Favourite Job
     Route::get('favourite-jobs', [FavouriteJobsController::class, 'index']);//
     Route::post('favourite-job/{fjob_s}', [FavouriteJobsController::class, 'addS']);
@@ -115,24 +120,33 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('answer-job', [AnswerJobsController::class, 'index']);
     Route::get('answer-job{id}', [AnswerJobsController::class, 'showS']); //display for student who post the job
     Route::post('answer-job/{question_s}', [AnswerJobsController::class, 'answerS']);
+    //notification
+    Route::get('unread/{profiles}', [NotificationController::class, 'unread']);//
+    Route::get('read/{profiles}', [NotificationController::class, 'read']);//
+    Route::get('getOne/{notification}', [NotificationController::class, 'show']);//
 
     //Employer----------------------------------------------------------------------------------------
     //Company Information
     Route::get('companies', [CompaniesController::class, 'index']);//
     Route::post('companies', [CompaniesController::class, 'store']);//
     Route::put('companies',  [CompaniesController::class, 'update']);//
+    //Logo
+    Route::get('logo', [CompanylogoController::class, 'index']);//
+    Route::post('logo', [CompanylogoController::class, 'store']);//
     //Get All Review
     Route::get('review-company/{companies}', [ReviewController::class, 'show']);
     //Question
     Route::get('question-dialog/{questions}', [QuestionsController::class, 'show']);//
+    Route::get('question-new/{companies}', [QuestionsController::class, 'shownewrecord']);//
     //Question job
     Route::get('question-dialogs/{ejob}', [QuestionJobsController::class, 'showE']); //display question
+    Route::get('question-news/{ejob}', [QuestionJobsController::class, 'shownewrecord']);//
     //Answer
     Route::post('answer-company/{questions}', [AnswersController::class, 'store']);//
     //Chat
-    Route::get('message', [ChatController::class, 'index']);
-    Route::get('message-jobseeker/{user}', [ChatController::class, 'showJobseeker']);
-    Route::post('message-jobseeker/{user}', [ChatController::class, 'sendJobseeker']);
+    // Route::get('message', [ChatController::class, 'index']);
+    // Route::get('message-jobseeker/{user}', [ChatController::class, 'showJobseeker']);
+    // Route::post('message-jobseeker/{user}', [ChatController::class, 'sendJobseeker']);
     //Job
     // Route::get('jobs', [JobsEmployerController::class, 'index']);
     Route::get('jobs-pending', [JobsEmployerController::class, 'showPending']);//
@@ -144,12 +158,19 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::put('jobs-recover/{job_e}',  [JobsEmployerController::class, 'recover']);//
 
     //Applicant apply
+    Route::get('applicants-display-dashboard/{companies}', [ApplicantsController::class, 'displayfordashboard']);//
     Route::get('applicants-display/{job_e}/{companies}', [ApplicantsController::class, 'display']);//
-    Route::get('applicants-pending/{companies}', [ApplicantsController::class, 'displayPending']);
+    Route::get('applicants-pending/{companies}', [ApplicantsController::class, 'displayPending']);//
     Route::get('applicants-approve/{job_e}/{companies}', [ApplicantsController::class, 'displayApproval']);//
     Route::get('applicants-reject/{job_e}/{companies}', [ApplicantsController::class, 'displayRejected']);//
     Route::put('applicants-approve/{applicants}',  [ApplicantsController::class, 'approve']); //
     Route::put('applicants-reject/{applicants}',  [ApplicantsController::class, 'reject']);//
     //Answer-job
-    Route::post('answer-jobs/{question_e}', [AnswerJobsController::class, 'answerE']);
+    Route::post('answer-jobs/{question_e}', [AnswerJobsController::class, 'answerE']);//
+    //GEt Profile details - education, experiences, skills
+    Route::get('get-education/{user}', [ApplicantsController::class, 'get_education']);//
+    Route::get('get-experience/{user}', [ApplicantsController::class, 'get_experience']);//
+    Route::get('get-skill/{user}', [ApplicantsController::class, 'get_skill']);//
+    
+
 });

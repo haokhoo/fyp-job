@@ -33,7 +33,6 @@ class QuestionJobsController extends Controller
     }
 
 
-
     public function showS(User $id)
     {
         return Question_jobs::where('jsk_id', $id->id)
@@ -98,6 +97,17 @@ class QuestionJobsController extends Controller
         return Question_jobs::where('question_jobs.id', $ejob->id)
             ->join('profiles', 'question_jobs.user_id', '=', 'profiles.user_id')
             ->select('question_jobs.id', 'question_jobs.question', 'question_jobs.job_epy_id', 'question_jobs.created_at', 'profiles.fullname')
+            ->orderBy('question_jobs.created_at', 'desc')
+            ->get();
+    }
+
+    public function shownewrecord(Jobs_employer $ejob)
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+        return Question_jobs::where('job_epy_id', $ejob->id)
+            ->join('profiles', 'question_jobs.user_id', '=', 'profiles.user_id')
+            ->select('question_jobs.id', 'question_jobs.question', 'question_jobs.created_at', 'question_jobs.status', 'profiles.fullname')
+            ->where('question_jobs.status', 0)
             ->orderBy('question_jobs.created_at', 'desc')
             ->get();
     }

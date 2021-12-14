@@ -19,24 +19,34 @@ class QuestionsController extends Controller
     {
         // $this->user = JWTAuth::parseToken()->authenticate();
     }
-
+    
     public function index(Companies $companies)
     {
         return Questions::where('company_id', $companies->id)
             ->join('profiles', 'questions.user_id', '=', 'profiles.user_id')
             ->select('questions.id', 'questions.question', 'questions.created_at', 'profiles.fullname')
             ->orderBy('questions.created_at', 'desc')
-            // ->where('questions.status', 0)
             ->get();
     }
 
     //For employer
+    public function shownewrecord(Companies $companies)
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+        return Questions::where('company_id', $companies->id)
+            ->join('profiles', 'questions.user_id', '=', 'profiles.user_id')
+            ->select('questions.id', 'questions.question', 'questions.created_at','questions.status', 'profiles.fullname')
+            ->orderBy('questions.created_at', 'desc')
+            ->where('questions.status', 0)
+            ->get();
+    }
+
     public function show(Questions $questions)
     {
         $this->user = JWTAuth::parseToken()->authenticate();
         return Questions::where('questions.id', $questions->id)
             ->join('profiles', 'questions.user_id', '=', 'profiles.user_id')
-            ->select('questions.id', 'questions.question', 'questions.created_at', 'profiles.fullname')
+            ->select('questions.id', 'questions.question', 'questions.created_at' ,'profiles.fullname')
             ->get();
     }
 

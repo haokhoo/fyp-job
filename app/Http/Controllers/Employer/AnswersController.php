@@ -58,9 +58,9 @@ class AnswersController extends Controller
 
         ]);
 
-        // $questions = $questions->update([
-        //     'status' => 1
-        // ]);
+         $questions->update([
+            'status' => 1
+        ]);
 
         return response()->json([
             'success' => true,

@@ -25,6 +25,8 @@ class CompaniesController extends Controller
         $this->user = JWTAuth::parseToken()->authenticate();
         return $this->user
             ->companies()
+            ->join('companylogos', 'companies.user_id', '=', 'companylogos.user_id')
+            ->select('companies.id', 'companylogos.logo', 'companies.company_name', 'companies.website', 'companies.email', 'companies.phone', 'companies.address1', 'companies.address2', 'companies.city', 'companies.state', 'companies.postal', 'companies.overview')
             ->get()
             ->last();
     }
@@ -32,21 +34,29 @@ class CompaniesController extends Controller
     public function getAllCompany()
     {
         return DB::table('companies')
-            ->select('id', 'logo', 'company_name')
+            ->join('companylogos', 'companies.user_id', '=', 'companylogos.user_id')
+            ->select('companies.id', 'companylogos.logo', 'companies.company_name', 'companies.website', 'companies.email', 'companies.phone', 'companies.address1', 'companies.address2', 'companies.city', 'companies.state', 'companies.postal', 'companies.overview')
+            ->groupBy('companies.id')
             ->get();
+        
+            // return DB::table('companylogos')
+            // ->select('user_id','logo')
+            // ->groupBy('user_id')
+            // ->get();
     }
 
     public function show(Companies $companies)
     {
-        return Companies::where('id', $companies->id)
-            ->select('id', 'logo', 'company_name', 'website', 'email', 'phone', 'address1', 'address2', 'city', 'state','postal', 'overview')
+        return Companies::where('companies.id', $companies->id)
+            ->join('companylogos', 'companies.user_id', '=', 'companylogos.user_id')
+            ->select('companies.id', 'companylogos.logo', 'companies.company_name', 'companies.website', 'companies.email', 'companies.phone', 'companies.address1', 'companies.address2', 'companies.city', 'companies.state', 'companies.postal', 'companies.overview')
             ->get();
     }
 
     public function store(Request $request)
     {
         $this->user = JWTAuth::parseToken()->authenticate();
-        $data = $request->only('company_name', 'website', 'email', 'phone', 'address1', 'address2', 'city', 'state', 'postal', 'overview', 'logo');
+        $data = $request->only('company_name', 'website', 'email', 'phone', 'address1', 'address2', 'city', 'state', 'postal', 'overview');
         $validator = Validator::make($data, [
             'company_name' => 'required|string',
             'website' => 'required',
@@ -57,8 +67,7 @@ class CompaniesController extends Controller
             'city' => 'required|string',
             'state' => 'required|string',
             'postal' => 'required|integer',
-            'overview' => 'required',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,svg|max:10240'
+            'overview' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -66,41 +75,32 @@ class CompaniesController extends Controller
         }
 
 
-        if ($request->hasFile('logo')) {
-            $file      = $request->file('logo');
-            $filename  = $file->getClientOriginalName();
-            $picture   = date('YmdHis') . '_' . $filename;
-            $move = $file->move(public_path('company_logo'), $picture);
 
-            if ($move) {
-                $companies = $this->user->companies()->create([
-                    'company_name' => $request->company_name,
-                    'website' => $request->website,
-                    'email' => $request->email,
-                    'phone' => $request->phone,
-                    'address1' => $request->address1,
-                    'address2' => $request->address2,
-                    'city' => $request->city,
-                    'state' => $request->state,
-                    'postal' => $request->postal,
-                    'country' => "Malaysia",
-                    'overview' => $request->overview,
-                    'logo' => 'company_logo/' . $picture
-                ]);
+        $companies = $this->user->companies()->create([
+            'company_name' => $request->company_name,
+            'website' => $request->website,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address1' => $request->address1,
+            'address2' => $request->address2,
+            'city' => $request->city,
+            'state' => $request->state,
+            'postal' => $request->postal,
+            'country' => "Malaysia",
+            'overview' => $request->overview
+        ]);
 
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Company information inserted successfully',
-                    'data' => $companies
-                ], Response::HTTP_OK);
-            }
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Company information inserted successfully',
+            'data' => $companies
+        ], Response::HTTP_OK);
     }
 
     public function update(Request $request, Companies $companies)
     {
         $this->user = JWTAuth::parseToken()->authenticate();
-        $data = $request->only('company_name', 'website', 'email', 'phone', 'address1', 'address2', 'city', 'state', 'postal', 'overview', 'logo');
+        $data = $request->only('company_name', 'website', 'email', 'phone', 'address1', 'address2', 'city', 'state', 'postal', 'overview');
         $validator = Validator::make($data, [
             'company_name' => 'required|string',
             'website' => 'required',
@@ -111,41 +111,31 @@ class CompaniesController extends Controller
             'city' => 'required|string',
             'state' => 'required|string',
             'postal' => 'required|integer',
-            'overview' => 'required',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,svg|max:10240'
+            'overview' => 'required'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->messages()], 400);
         }
 
-        if ($request->hasFile('logo')) {
-            $file      = $request->file('logo');
-            $filename  = $file->getClientOriginalName();
-            $picture   = date('YmdHis') . '_' . $filename;
-            $move = $file->move(public_path('company_logo'), $picture);
 
-            if ($move) {
-                $companies = $this->user->companies()->update([
-                    'company_name' => $request->company_name,
-                    'website' => $request->website,
-                    'email' => $request->email,
-                    'phone' => $request->phone,
-                    'address1' => $request->address1,
-                    'address2' => $request->address2,
-                    'city' => $request->city,
-                    'state' => $request->state,
-                    'postal' => $request->postal,
-                    'overview' => $request->overview,
-                    'logo' => 'company_logo/' . $picture
-                ]);
+        $companies = $this->user->companies()->update([
+            'company_name' => $request->company_name,
+            'website' => $request->website,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address1' => $request->address1,
+            'address2' => $request->address2,
+            'city' => $request->city,
+            'state' => $request->state,
+            'postal' => $request->postal,
+            'overview' => $request->overview
+        ]);
 
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Company information updated successfully',
-                    'data' => $companies
-                ], Response::HTTP_OK);
-            }
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Company information updated successfully',
+            'data' => $companies
+        ], Response::HTTP_OK);
     }
 }

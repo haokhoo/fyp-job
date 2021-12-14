@@ -20,7 +20,6 @@ class Companies extends Model
         'state',
         'postal',
         'country',
-        'overview',
-        'logo'
+        'overview'
     ];
 }

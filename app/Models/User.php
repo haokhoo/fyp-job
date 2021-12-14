@@ -17,10 +17,11 @@ use App\Models\Jobseeker\Jobs_students;
 use App\Models\Jobseeker\Question_jobs;
 
 use App\Models\Employer\Companies;
+use App\Models\Employer\Companylogo;
 use App\Models\Employer\Answers;
 use App\Models\Employer\Jobs_employer;
 use App\Models\Employer\Answer_jobs;
-
+use App\Models\Jobseeker\Notification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -144,6 +145,12 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(Companies::class);
     }
 
+    public function logo()
+    {
+        return $this->hasOne(Companylogo::class);
+    }
+    
+
     public function answer()
     {
         return $this->hasMany(Answers::class);
@@ -157,5 +164,10 @@ class User extends Authenticatable implements JWTSubject
     public function answer_job()
     {
         return $this->hasMany(Answer_jobs::class);
+    }
+
+    public function notification()
+    {
+        return $this->hasMany(Notification::class);
     }
 }

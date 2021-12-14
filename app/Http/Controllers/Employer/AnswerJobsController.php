@@ -79,6 +79,10 @@ class AnswerJobsController extends Controller
             'question_id' => $question_e->id
         ]);
 
+        $question_e->update([
+            'status' => 1
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Answer sent successfully',

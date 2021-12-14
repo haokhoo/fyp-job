@@ -21,6 +21,20 @@ class JobsEmployerController extends Controller
         // $this->user = JWTAuth::parseToken()->authenticate();
     }
 
+    public function search(Request $request)
+    {
+        $query = Jobs_employer::query();
+        $data = $request->input('search_job');
+        if ($data) {
+            $query->whereRaw("title LIKE '%" . $data . "%'");
+        }
+        return $query->join('companies', 'jobs_employers.company_id', '=', 'companies.id')
+                        ->select('jobs_employers.*', 'companies.company_name', 'companies.state')
+                        ->where('status',1)
+                        ->orderBy('updated_at', 'desc')
+                        ->get();
+    }
+
     public function index()
     {
         return Jobs_employer::where('status', 1)
@@ -129,6 +143,7 @@ class JobsEmployerController extends Controller
             'data' => $job_e
         ], Response::HTTP_OK);
     }
+
 
     //Admin----------------------------------------------
     public function approval(Jobs_employer $job_e)
