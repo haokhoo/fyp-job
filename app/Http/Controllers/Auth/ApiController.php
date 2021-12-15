@@ -33,7 +33,7 @@ class ApiController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'role' => 2
+            'role_default' => 2
         ]);
 
         //User created, return success response
@@ -71,7 +71,7 @@ class ApiController extends Controller
                 ], 400);
             }
 
-            $auth = DB::table('users')->select('role')->where('email', $request['email'])->first()->role;
+            $auth = DB::table('users')->select('role_default')->where('email', $request['email'])->first()->role_default;
             if ($auth == '3') {
                 return response()->json([
                     'success' => false,
@@ -153,7 +153,7 @@ class ApiController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'role' => 3
+            'role_default' => 3
         ]);
 
         //User created, return success response
@@ -189,7 +189,7 @@ class ApiController extends Controller
                 ], 400);
             }
 
-            $auth = DB::table('users')->select('role')->where('email', $request['email'])->first()->role;
+            $auth = DB::table('users')->select('role_default')->where('email', $request['email'])->first()->role_default;
             if ($auth == '2') {
                 return response()->json([
                     'success' => false,

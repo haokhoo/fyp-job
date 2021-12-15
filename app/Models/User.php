@@ -28,7 +28,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends \TCG\Voyager\Models\User implements JWTSubject
 {
     use HasFactory, Notifiable;
 
@@ -41,7 +41,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'role'
+        'role_default'
     ];
 
     /**
