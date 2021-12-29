@@ -156,6 +156,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::put('jobs-approve/{job_e}',  [JobsEmployerController::class, 'approval']); //admin
     Route::put('jobs-remove/{job_e}',  [JobsEmployerController::class, 'remove']);//
     Route::put('jobs-recover/{job_e}',  [JobsEmployerController::class, 'recover']);//
+    Route::get('jobs-count', [JobsEmployerController::class, 'countJob']);//
 
     //Applicant apply
     Route::get('applicants-display-dashboard/{companies}', [ApplicantsController::class, 'displayfordashboard']);//

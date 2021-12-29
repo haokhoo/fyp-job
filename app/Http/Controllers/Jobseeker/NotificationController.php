@@ -21,7 +21,7 @@ class NotificationController extends Controller
 
     public function unread(Profiles $profiles)
     {
-        return Notification::where('id', $profiles->id)
+        return Notification::where('to_user_id', $profiles->user_id)
             ->where('status', 0)
             ->get();
     }
@@ -42,7 +42,7 @@ class NotificationController extends Controller
         return Notification::where('notifications.id', $notification->id)
             ->join('jobs_employers', 'notifications.job_epy_id', '=', 'jobs_employers.id')
             ->join('companies', 'jobs_employers.company_id', '=', 'companies.id')
-            ->select('jobs_employers.title as job_title', 'companies.company_name', 'notifications.title', 'notifications.desc', 'notifications.shorttext', 'notifications.updated_at' )
+            ->select('jobs_employers.title as job_title', 'companies.company_name', 'notifications.title', 'notifications.desc', 'notifications.shorttext', 'notifications.created_at' )
             ->get();
     }
 }

@@ -35,6 +35,14 @@ class JobsEmployerController extends Controller
                         ->get();
     }
 
+    public function countJob()
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+        return $this->user
+            ->job_e()
+            ->get();
+    }
+
     public function index()
     {
         return Jobs_employer::where('status', 1)

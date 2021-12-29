@@ -19,6 +19,7 @@ use JWTAuth;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class ApplicantsController extends Controller
 {
@@ -203,6 +204,7 @@ class ApplicantsController extends Controller
             'title' => 'Your job application has been shortlisted!',
             'desc' => 'Good news! Your job application below has been shortlisted by an employer.',
             'shorttext' => 'You are being considered for this job. The employer will decide whether to select you for an interview',
+            "created_at"=> Carbon::now(),
             'status' => 0
 
         ]);
@@ -219,12 +221,13 @@ class ApplicantsController extends Controller
             'status' => 2
         ]);
 
-        $this->user->notification()->create([
+        DB::table('notifications')->insert([
             'to_user_id' => $applicants->user_id,
-            'job_eyp_id' => $applicants->job_epy_job,
+            'job_epy_id' => $applicants->job_epy_job,
             'title' => 'Your job application unlikely to progress further.',
             'desc' => 'Your job application below is unlikely to progress further.',
             'shorttext' => 'Each employer or recruiter has their own process so you may or may not hear back from them.',
+            "created_at"=> Carbon::now(),
             'status' => 0
 
         ]);
