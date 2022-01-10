@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use TCG\Voyager\Facades\Voyager;
 use App\Models\Employer\Jobs_employer;
+use App\Models\Employer\Companies;
 
 class Jobs extends AbstractWidget
 {
@@ -23,16 +24,30 @@ class Jobs extends AbstractWidget
      */
     public function run()
     {
+        // $count = Jobs_employer::count();
+        // $string = 'Jobs';
+
+        // return view('voyager::dimmer', array_merge($this->config, [
+        //     'icon'   => 'voyager-documentation',
+        //     'title'  => "{$count} {$string}",
+        //     'text'   => __('voyager::dimmer.user_text', ['count' => $count, 'string' => Str::lower($string)]),
+        //     'button' => [
+        //         'text' => __('View all jobs'),
+        //         'link' => route('voyager.jobs.index'),
+        //     ],
+        //     'image' => voyager_asset('images/widget-backgrounds/02.jpg'),
+        // ]));
+
         $count = Jobs_employer::count();
         $string = 'Jobs';
 
         return view('voyager::dimmer', array_merge($this->config, [
             'icon'   => 'voyager-documentation',
             'title'  => "{$count} {$string}",
-            'text'   => __('voyager::dimmer.post_text', ['count' => $count, 'string' => Str::lower($string)]),
+            'text'   => __('voyager::dimmer.user_text', ['count' => $count, 'string' => Str::lower($string)]),
             'button' => [
-                'text' => __('View all jobs'),
-                'link' => route('voyager.jobs.index'),
+                'text' => __('View all Jobs'),
+                'link' => route('voyager.jobs-employers.index'),
             ],
             'image' => voyager_asset('images/widget-backgrounds/02.jpg'),
         ]));
@@ -45,6 +60,6 @@ class Jobs extends AbstractWidget
      */
     public function shouldBeDisplayed()
     {
-        return Auth::user()->can('browse', Voyager::model('Post'));
+        return Auth::user()->can('browse', Voyager::model('User'));
     }
 }
